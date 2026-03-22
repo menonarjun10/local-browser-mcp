@@ -2,17 +2,20 @@
 
 `local-browser-mcp` is an MCP server that lets an agent use a browser running on your machine.
 
-The point is not generic browser automation. The point is exposing local, user-owned browser capabilities to an MCP client such as Codex or ChatGPT through a local bridge.
+The point is not generic browser automation. The point is exposing local, user-owned browser capabilities to an MCP client through a local bridge.
 
 ## Client compatibility
 
-The server is designed around MCP and should be portable to other MCP-capable clients, but the currently documented install path is verified for Codex only.
+This repo is a local `stdio` MCP server. That means compatibility depends on whether the client can launch local MCP processes.
 
-Today, this repo should be described as:
+Current support should be described as:
 
-- working with Codex
-- likely portable to other MCP-capable clients
-- not yet documented or verified end-to-end for Claude Code or other clients
+- `Codex`: supported and documented in this repo
+- `Claude Code`: expected to work through local `stdio` MCP configuration
+- `Claude Desktop`: expected to work through local `stdio` MCP configuration
+- `ChatGPT`: not supported by this local-server shape today because ChatGPT MCP integration is remote-oriented rather than local `stdio`
+
+The server runtime is portable. The install and registration steps are client-specific.
 
 ## Current stage
 
@@ -75,7 +78,7 @@ Different people need different entry points. A useful local browser bridge shou
 
 ### Developer or agent builder
 
-- "Expose a local browser as MCP tools to a ChatGPT or Codex workflow."
+- "Expose a local browser as MCP tools to a Codex or Claude workflow."
 - "Let an agent inspect a page in my local browser instead of a cloud browser."
 - "Build a local companion that gives a cloud agent access to a user-owned browser context."
 
@@ -139,14 +142,92 @@ After installing, restart your MCP client so it reloads the server.
 
 The runtime itself is not intended to be Codex-specific, but the helper install scripts currently target Codex configuration.
 
-If you want to use another MCP client such as Claude Code, treat that as a manual integration:
+### Claude Code
 
-1. install dependencies with `npm install`
-2. inspect what `npm run install-local` writes for Codex
-3. register the same server command in your other client's MCP configuration format
-4. restart that client and verify that the `local_browser` tool namespace loads
+Claude Code supports local `stdio` MCP servers. A direct install looks like:
 
-Until that path is tested, avoid claiming direct Claude Code support in the README.
+```bash
+claude mcp add --transport stdio local_browser -- \
+  node /absolute/path/to/local-browser-mcp/bin/local-browser-mcp.js
+```
+
+With environment overrides:
+
+```bash
+claude mcp add --transport stdio \
+  --env BROWSER_TARGET=chrome \
+  --env CHROME_CDP_PORT=9224 \
+  local_browser -- \
+  node /absolute/path/to/local-browser-mcp/bin/local-browser-mcp.js
+```
+
+Project config example:
+
+```json
+{
+  "mcpServers": {
+    "local_browser": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/absolute/path/to/local-browser-mcp/bin/local-browser-mcp.js"
+      ],
+      "env": {
+        "BROWSER_TARGET": "chrome",
+        "CHROME_CDP_PORT": "9224"
+      }
+    }
+  }
+}
+```
+
+### Claude Desktop
+
+Claude Desktop can use the same local server shape through its desktop MCP config:
+
+```json
+{
+  "mcpServers": {
+    "local_browser": {
+      "command": "node",
+      "args": [
+        "/absolute/path/to/local-browser-mcp/bin/local-browser-mcp.js"
+      ],
+      "env": {
+        "BROWSER_TARGET": "chrome",
+        "CHROME_CDP_PORT": "9224"
+      }
+    }
+  }
+}
+```
+
+### Generic MCP clients with local `stdio` support
+
+If a client supports local `stdio` MCP servers, the portable shape is:
+
+```json
+{
+  "mcpServers": {
+    "local_browser": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/absolute/path/to/local-browser-mcp/bin/local-browser-mcp.js"
+      ],
+      "env": {
+        "BROWSER_TARGET": "chrome"
+      }
+    }
+  }
+}
+```
+
+### ChatGPT
+
+ChatGPT currently does not support connecting directly to local `stdio` MCP servers like this one.
+
+If you want ChatGPT compatibility, this project would need an additional remote MCP wrapper or hosted transport rather than just the current local process model.
 
 ## Available tools
 
