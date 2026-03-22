@@ -1,0 +1,41 @@
+{
+  "name": "local-browser-mcp",
+  "version": "0.1.0",
+  "description": "MCP server that lets an agent use a browser running on the local machine through backend adapters.",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "browser",
+    "automation",
+    "local-browser",
+    "agent-tools",
+    "codex"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/menonarjun10/local-browser-mcp.git"
+  },
+  "homepage": "https://github.com/menonarjun10/local-browser-mcp",
+  "bugs": {
+    "url": "https://github.com/menonarjun10/local-browser-mcp/issues"
+  },
+  "type": "module",
+  "bin": {
+    "local-browser-mcp": "./bin/local-browser-mcp.js"
+  },
+  "scripts": {
+    "serve": "node ./src/server.js",
+    "install-local": "node ./scripts/install.js",
+    "install-global": "node ./scripts/install-global.js",
+    "doctor": "node ./scripts/doctor.js",
+    "launch": "node ./scripts/launch.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "playwright-core": "^1.54.2",
+    "zod": "^3.25.76"
+  }
+}

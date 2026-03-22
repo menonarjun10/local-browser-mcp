@@ -1,0 +1,10 @@
+node_modules
+dist
+.DS_Store
+*.log
+.env
+.env.*
+.playwright-cli/
+output/
+CONTEXT.md
+SESSION_SCOPING_AND_TOOL_CAPABILITIES.md
