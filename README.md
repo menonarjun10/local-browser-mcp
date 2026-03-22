@@ -53,6 +53,26 @@ That is what this project does.
 - not a guarantee of perfect reliability across every site or sleep/wake cycle
 - not a way for a cloud agent to use your local browser without a local companion process
 
+## Why not Playwright MCP?
+
+`playwright-mcp` and `local-browser-mcp` solve different problems.
+
+Use Playwright MCP when you want:
+
+- generic browser automation
+- a Playwright-managed browser context
+- stronger DOM automation as the main goal
+- testing or scripted workflow behavior
+
+Use `local-browser-mcp` when you want:
+
+- access to the user's real local browser
+- existing signed-in browser state on the user's machine
+- a smaller, purpose-built tool surface for browsing and lightweight interaction
+- a local companion model where the value is user-owned browser context rather than generic automation power
+
+The point of this project is not to outperform Playwright as an automation stack. The point is to give an MCP client controlled access to a user-owned local browser session.
+
 ## Core use cases
 
 - Use an already signed-in browser context from an agent.
